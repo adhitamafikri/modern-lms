@@ -1,0 +1,5 @@
+tasks:
+  example:
+    description: "This is example task"
+    run: echo "Hello, World!"
+    toolchain: "system"
