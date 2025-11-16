@@ -1,0 +1,80 @@
+services:
+  postgres: 
+    image: postgres:17-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=modern_lms
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      - modern_lms
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - modern_lms
+
+  backend:
+    build:
+      context: ../app/backend
+      dockerfile: ../../infra/docker/Dockerfile.backend
+      target: development
+    ports:
+      - "8000:8000"
+    env_file:
+      - ../app/backend/.env.local
+    volumes:
+      - ../app/backend:/app:delegated
+      - /app/node_modules
+    networks:
+      - modern_lms
+
+  admin:
+    build:
+      context: ../app/admin
+      dockerfile: ../../infra/docker/Dockerfile.admin
+    ports:
+      - "3300:3300"
+    env_file:
+      - ../app/admin/.env.local
+    depends_on:
+      - postgres
+      - redis
+      - backend
+    networks:
+      - modern_lms
+
+  platform:
+    build:
+      context: ../app/platform
+      dockerfile: ../../infra/docker/Dockerfile.platform
+    ports:
+      - "3000:3000"
+    env_file:
+      - ../app/platform/.env.local
+    depends_on:
+      - postgres
+      - redis
+      - backend
+    networks:
+      - modern_lms
+
+networks:
+  modern_lms:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
