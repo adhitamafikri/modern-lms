@@ -1,0 +1,68 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: fikridev
+      POSTGRES_PASSWORD: postgres.fikridev
+      POSTGRES_DB: modern-lms-postgres
+    networks:
+      - modern-lms-net
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - modern-lms-net
+  
+  api:
+    build:
+      context: ./playgrounds/api
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    ports:
+      - '8080:8080'
+    networks:
+      - modern-lms-net
+    depends_on:
+      - postgres
+      - redis
+
+  platform:
+    build:
+      context: ./playgrounds/platform
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    networks:
+      - modern-lms-net
+    depends_on:
+      - api
+
+  admin-dashboard:
+    build:
+      context: ./playgrounds/platform
+      dockerfile: Dockerfile.dev
+    ports:
+      - '5173:5173'
+    networks:
+      - modern-lms-net
+    depends_on:
+      - api
+
+networks:
+  modern-lms-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
