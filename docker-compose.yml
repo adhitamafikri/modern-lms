@@ -45,19 +45,19 @@ services:
       - '3000:3000'
     networks:
       - modern-lms-net
-    depends_on:
-      - api
+    # depends_on:
+    #   - api
 
   admin-dashboard:
     build:
-      context: ./playgrounds/platform
+      context: ./playgrounds/admin-dashboard
       dockerfile: Dockerfile.dev
     ports:
       - '5173:5173'
     networks:
       - modern-lms-net
-    depends_on:
-      - api
+    # depends_on:
+    #   - api
 
 networks:
   modern-lms-net:
