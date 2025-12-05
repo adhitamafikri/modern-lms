@@ -43,6 +43,9 @@ services:
     restart: unless-stopped
     ports:
       - '3000:3000'
+    volumes:
+      - ./playgrounds/platform:/app
+      - /app/node_modules
     networks:
       - modern-lms-net
     # depends_on:
@@ -54,6 +57,9 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - '5173:5173'
+    volumes:
+      - ./playgrounds/admin-dashboard:/app
+      - /app/node_modules
     networks:
       - modern-lms-net
     # depends_on:

@@ -59,6 +59,10 @@ export default function Home() {
             Documentation
           </a>
         </div>
+
+        <button className="btn btn-neutral">Neutral</button>
+        <button className="btn btn-neutral">Neutral</button>
+        <button className="btn btn-neutral">Bangke</button>
       </main>
     </div>
   );
