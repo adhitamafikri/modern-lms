@@ -7,7 +7,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: fikridev
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres.fikridev
       POSTGRES_DB: modern-lms-postgres
     networks:
